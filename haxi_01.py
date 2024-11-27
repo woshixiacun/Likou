@@ -43,6 +43,9 @@ class Solution(object):
                     
 a = Solution().twoSum(nums,target)   
 print(a)  
+
+
+
 nums = [2,5,11,15]
 target =9
 
@@ -54,6 +57,8 @@ class Solution2:
                 return [hashtable[target - num], i]
             hashtable[nums[i]] = i
         return []
+    
+
 
 
         
