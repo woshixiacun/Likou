@@ -1,0 +1,1370 @@
+<html lang="zh-CN"><head><meta charset="UTF-8"><style>.nodata  main {width:1000px;margin: auto;}</style></head><body class="nodata " style=""><div class="main_father clearfix d-flex justify-content-center " style="height:100%;"> <div class="container clearfix " id="mainBox"><main><div class="blog-content-box">
+<div class="article-header-box">
+<div class="article-header">
+<div class="article-title-box">
+<h1 class="title-article" id="articleContentId">(C卷,200分)- 模拟数据序列化传输（Java & JS & Python & C & C++）</h1>
+</div>
+</div>
+</div>
+<div id="blogHuaweiyunAdvert"></div>
+
+        <div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-044f2cf1dc.css">
+                <div id="content_views" class="htmledit_views">
+                    <h4 id="main-toc">题目描述</h4> 
+<p>模拟一套简化的序列化传输方式&#xff0c;请实现下面的数据编码与解码过程</p> 
+<ol><li>编码前数据格式为 [位置,类型,值]&#xff0c;多个数据的时候用逗号分隔&#xff0c;位置仅支持数字&#xff0c;不考虑重复等场景&#xff1b;类型仅支持&#xff1a;Integer / String / Compose&#xff08;Compose的数据类型表示该存储的数据也需要编码&#xff09;</li><li>编码后数据参考图示&#xff0c;数据区的格式是&#xff1a;位置#类型#长度#数据&#xff0c;类型存储需要编码&#xff0c;Integer-&gt;0&#xff1b;String-&gt;1&#xff1b;Compose-&gt;2&#xff0c;长度是指数据的字符长度&#xff1b;数据仅允许数字、大小写字母、空格。<br />   <p class="img-center"><img alt="" height="183" src="https://img-blog.csdnimg.cn/direct/84002469938e4c1f8cab4035b0c0a691.png" width="622" /></p> </li><li>输入的编码字符长度不能超过1000&#xff0c;一个数据的格式错误&#xff0c;则解析剩下数据&#xff0c;其他错误输出ENCODE_ERROR。</li><li>输入的解码字符不能超过1000&#xff0c;数据区异常则跳过继续解析剩余数据区&#xff0c;其他异常输出DECODE_ERROR。</li></ol> 
+<p></p> 
+<h4 id="%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0">输入描述</h4> 
+<p>输入有两行&#xff1a;</p> 
+<ul><li>第一行是命令&#xff0c;1表示编码&#xff0c;2表示解码</li><li>第二行输入待编码、解码的字符</li></ul> 
+<p>数据最多嵌套10层&#xff0c;[1,Compose,[1,String,Second]] 为2层嵌套。</p> 
+<p></p> 
+<h4 id="%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0">输出描述</h4> 
+<p>如果输入要求是编码&#xff0c;则输出编码结果&#xff1b;</p> 
+<p>如果输入要求是解码&#xff0c;则输出解码结果&#xff1b;</p> 
+<p>当异常时输出对应的错误字符。</p> 
+<p></p> 
+<h4 id="%E7%94%A8%E4%BE%8B">用例</h4> 
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><tbody><tr><td style="width:86px;">输入</td><td style="width:412px;">1<br /> [1,String,I am Mary],[2,Integer,23],[3,Long,1000000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]</td></tr><tr><td style="width:86px;">输出</td><td style="width:412px;">1#1#9#I am Mary2#0#2#234#2#25#1#1#10#I am Kitty2#0#2#44</td></tr><tr><td style="width:86px;">说明</td><td style="width:412px;">由于Long型为不支持类型&#xff0c;所以数据[3,Long,1000000]自动被过滤掉</td></tr></tbody></table> 
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><tbody><tr><td style="width:86px;">输入</td><td style="width:412px;">2<br /> 1#1#9#I am Mary2#0#2#233#0#3#8794#2#25#1#1#10#I am Kitty2#0#2#44</td></tr><tr><td style="width:86px;">输出</td><td style="width:412px;">[I,String,I am Mary],[2,Integer,23],[3,Integer,879],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]</td></tr><tr><td style="width:86px;">说明</td><td style="width:412px;">无</td></tr></tbody></table> 
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><tbody><tr><td style="width:86px;">输入</td><td style="width:412px;">2<br /> xxx</td></tr><tr><td style="width:86px;">输出</td><td style="width:412px;">DECODE_ERROR</td></tr><tr><td style="width:86px;">说明</td><td style="width:412px;">输入的待解码数据不满足格式要求</td></tr></tbody></table> 
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><tbody><tr><td style="width:86px;">输入</td><td style="width:412px;">1<br /> [1,String,I am Mary],[2,Integer,23]],</td></tr><tr><td style="width:86px;">输出</td><td style="width:412px;">ENCODE_ERROR</td></tr><tr><td style="width:86px;">说明</td><td style="width:412px;">输入格式不满足输入格式要求</td></tr></tbody></table> 
+<h4 id="%E9%A2%98%E7%9B%AE%E8%A7%A3%E6%9E%90">题目解析</h4> 
+<p>本题主要考察字符串解析。</p> 
+<p></p> 
+<p>输入的字符串有两种可能&#xff1a;</p> 
+<ul><li>待编码串</li><li>待解码串</li></ul> 
+<p></p> 
+<p>对于待编码串&#xff0c;我们需要做两件事&#xff1a;</p> 
+<ol><li>待编码串的格式是否合法</li><li>编码该串</li></ol> 
+<hr /> 
+<p>关于1&#xff1a;</p> 
+<p>如何检查待编码串的格式是否合法呢&#xff1f;</p> 
+<p>其实我们可以发现待编码串&#xff0c;比如&#xff1a;</p> 
+<blockquote> 
+ <p>[1,String,I am Mary],[2,Integer,23],[3,Long,1000000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]</p> 
+</blockquote> 
+<p>其实就是一个括号匹配问题&#xff0c;比如上面待编码串&#xff0c;可以简化为&#xff1a;<span style="color:#1c7331;"> [ ] [ ] [ ] [</span> <span style="color:#fe2c24;">[ ] [ ]</span> <span style="color:#1c7331;">]</span></p> 
+<p>因此&#xff0c;待编码串的格式是否合法&#xff0c;可以等价于&#39;[&#39;&#xff0c;&#39;]&#39;闭合性是否合法 。比如下面&#xff1a;</p> 
+<blockquote> 
+ <p>[1,String,I am Mary],[2,Integer,23]],</p> 
+</blockquote> 
+<p>该待编码串由于&#39;[&#39;&#xff0c;&#39;]&#39;闭合性非法&#xff0c;因此待编码串格式也是非法的。</p> 
+<p>对于括号的闭合性检查&#xff0c;我们可以利用栈来解决。实操过程中&#xff0c;[] 与 [] 之间的逗号&#39;,&#39;比较影响判断&#xff0c;因此我们可以去除掉这样的逗号&#xff0c;进行替换 &#34;],[&#34; 为 &#34;][&#34; 即可。</p> 
+<p>另外需要注意的是&#xff0c;进行&#39;[&#39;&#xff0c;&#39;]&#39;闭合性检查时&#xff0c;我们不能忽略其他字符&#xff0c;比如下面情况&#xff1a;</p> 
+<blockquote> 
+ <p>xxx[1,String,I am Mary],[2,Integer,23]</p> 
+</blockquote> 
+<p>这种情况&#xff0c;我理解也是格式非法。</p> 
+<hr /> 
+<p>关于2&#xff1a;</p> 
+<p>如果检查了待编码串是合法的&#xff0c;之后我的思路是&#xff0c;提取出每个数据区对应的 &#34; [位置,类型,值]&#34; 子串&#xff0c;并将其解析后得出编码后子串 &#34;位置#类型#值长度#值&#34;&#xff0c;之后替换待编码子串为编码后子串。</p> 
+<p>但是&#xff0c;这里的数据区有两种情况&#xff1a;</p> 
+<ul><li>Compose类型&#xff1a;嵌套结构</li><li>非Compose类型&#xff08;Integer类型&#xff0c;String类型&#xff09;&#xff1a;非嵌套结构</li></ul> 
+<blockquote> 
+ <p>其中有嵌套结构的Compose类型数据区不好直接解析。因此&#xff0c;我们可以优先处理 &#34;非Compose类型&#34; 的数据区。</p> 
+</blockquote> 
+<p>而对于 &#34;Compose类型&#34; 数据区而言&#xff0c;虽然是嵌套结构&#xff0c;比如&#xff1a;</p> 
+<blockquote> 
+ <p>[4,Compose,[1,String,I am Kitty]]</p> 
+</blockquote> 
+<p>我们可以首先替换其嵌套结构最里面的&#34;非Compose类型&#34; 的数据区&#xff0c;则变为&#xff1a;</p> 
+<blockquote> 
+ <p>[4,Compose,1#1#10#I am Kitty]</p> 
+</blockquote> 
+<p>此时可以发现 &#34;Compose类型&#34; 数据区 嵌套结构没了&#xff0c;也变为了单层&#xff0c;因此此时&#34;Compose类型&#34; 数据区可以直接和&#34;非Compose类型&#34; 的数据区一样处理&#xff0c;变为&#xff1a;</p> 
+<blockquote> 
+ <p>4#2#17#1#1#10#I am Kitty</p> 
+</blockquote> 
+<p></p> 
+<p>因此&#xff0c;此时实现的关键&#xff0c;就是如何找出 &#34;非Compose类型数据区子串&#34;&#xff08;包括嵌套结构中的&#xff09;。</p> 
+<p>这里我是利用正则表达式来匹配出待编码数据区子串&#xff0c;而待编码数据区子串模板为&#xff1a;&#34;[位置,类型,数据]&#34;&#xff0c;其中 &#39;[&#39;&#xff0c;&#39;]&#39; 是正则的元字符&#xff0c;有特殊含义&#xff0c;因此我这里先将输入串中所有&#xff1a;</p> 
+<ul><li>&#39;[&#39; 替换为 &#39;&lt;&#39;</li><li>&#39;]&#39; 替换为 &#39;&gt;&#39;</li></ul> 
+<p>然后利用如下正则来匹配 &#34;非Compose类型的待编码数据区子串&#34;</p> 
+<blockquote> 
+ <pre>&lt;([^&lt;&gt;]&#43;)&gt;
+</pre> 
+</blockquote> 
+<p>比如匹配 &#34;&lt;1,String,I am Jerry&gt;&#34;。</p> 
+<p><img alt="" height="379" src="https://img-blog.csdnimg.cn/direct/4294df478383420c81058b7619975c53.png" width="784" /></p> 
+<p>其中&lt;&gt;中的内容&#xff0c;只能是非&#39;&lt;&#39;和&#39;&gt;&#39;字符&#xff0c;这样的好处是&#xff0c;可以避免匹配到嵌套结构&#xff0c;</p> 
+<p>比如&#34;&lt;3,Compose,&lt;1,String,I am Jerry&gt;&gt;&#34;。</p> 
+<p>此时上面正则不会匹配到&#34;<strong><span style="color:#ffd900;">&lt;3,Compose,</span><span style="color:#fe2c24;">&lt;</span><span style="color:#ffd900;">1,String,I am Jerry&gt;</span>&gt;</strong>&#34; 黄色部分&#xff0c;因为该部分&lt;&gt;中内容含有了&#39;&lt;&#39;字符。</p> 
+<hr /> 
+<p></p> 
+<p>对于待解码串&#xff0c;有如下难点&#xff1a;</p> 
+<ol><li>各数据区之间没有分隔符&#xff0c;即无法直接分离出各个数据区</li><li>Compose类型数据区的&#34;数据&#34;部分也是一个或多个数据区组合</li></ol> 
+<p>比如</p> 
+<blockquote> 
+ <p>1#1#9#I am Mary2#0#2#233#0#3#8794#2#25#1#1#10#I am Kitty2#0#2#44</p> 
+</blockquote> 
+<p>其中各个数据区用不同颜色标记的话&#xff0c;下划线和删除线标记的是嵌套结构</p> 
+<blockquote> 
+ <p><span style="color:#fe2c24;">1#1#<strong>9</strong>#I am Mary</span><span style="color:#a2e043;">2#0#<strong>2</strong>#23</span><span style="color:#956fe7;">3#0#<strong>3</strong>#879</span><span style="color:#38d8f0;">4#2#<strong>25</strong>#<u>1#1#<strong>10</strong>#I am Kitty</u><s>2#0#<strong>2</strong>#44</s></span></p> 
+</blockquote> 
+<p>可以发现&#xff0c;各个数据区是混在一起的&#xff0c;没有分隔符可以分割。</p> 
+<p></p> 
+<p>这里我的解题思路是&#xff0c;先不管三七二十一&#xff0c;按照#分割&#xff0c;得到一个数组&#xff1a;</p> 
+<blockquote> 
+ <p>[&#34;1&#34;,&#34;1&#34;,&#34;9&#34;,&#34;I am Mary2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;233&#34;,&#34;0&#34;,&#34;3&#34;,&#34;8794&#34;,&#34;2&#34;,&#34;25&#34;,&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+</blockquote> 
+<p>然后每轮弹出头部四个元素&#xff0c;比如上面数组首轮出队&#xff1a;&#34;1&#34;,&#34;1&#34;,&#34;9&#34;,&#34;I am Mary2&#34;&#xff0c;此时数组变为&#xff1a;</p> 
+<blockquote> 
+ <p>[&#34;0&#34;,&#34;2&#34;,&#34;233&#34;,&#34;0&#34;,&#34;3&#34;,&#34;8794&#34;,&#34;2&#34;,&#34;25&#34;,&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+</blockquote> 
+<p>出队元素依次作为数据区的如下信息&#xff1a;</p> 
+<ul><li>pos&#xff1a;&#34;1&#34;</li><li>type&#xff1a;&#34;1&#34;</li><li>len&#xff1a;&#34;9&#34;</li><li>data&#xff1a;&#34;I am Mary2&#34;</li></ul> 
+<p>其中data信息可能不纯粹&#xff0c;即可能是多个信息的拼接。比如上面例子&#xff0c;此时我们需要从data中将信息进行分离&#xff0c;分离标准就是len信息。</p> 
+<p>因为待解码数据区子串的 data 长度就是len&#xff0c;比如上面例子 len &#61; 9&#xff0c;因此我们可以从 data 中截取 [0, 9) 范围的内容作为数据区真正的数据信息&#xff0c;即&#34;I am Mary&#34;。</p> 
+<p>此时我们就得到一个数据区的完整信息&#xff0c;可以进行解码操作&#xff0c;即拼接出&#34;[pos,type,data]&#34;&#xff1a;</p> 
+<blockquote> 
+ <p>[1,String,I am Mary]</p> 
+</blockquote> 
+<p>而剩余部分 [9, end) 对应的 &#34;2&#34; 则是下一个兄弟数据区的nextPos信息。因此我们需要重新将该nextPos重新头部入队&#xff0c;即数组变为&#xff1a;</p> 
+<blockquote> 
+ <p>[<span style="color:#fe2c24;"><strong>&#34;2&#34;</strong></span>,&#34;0&#34;,&#34;2&#34;,&#34;233&#34;,&#34;0&#34;,&#34;3&#34;,&#34;8794&#34;,&#34;2&#34;,&#34;25&#34;,&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+</blockquote> 
+<hr /> 
+<p>按此逻辑&#xff0c;我们再次出队四个元素 &#xff1a;<span style="color:#0d0016;">[&#34;2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;233&#34;]&#xff0c;之后数组变为</span>&#xff1a;[&#34;0&#34;,&#34;3&#34;,&#34;8794&#34;,&#34;2&#34;,&#34;25&#34;,&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+<p>根据出队元素得出&#xff0c;数据区解码后内容为&#xff1a;</p> 
+<p>[2,Integer,23]</p> 
+<p>出队的四个元素中最后一个元素剩余部分重新入队</p> 
+<p>[<strong><span style="color:#fe2c24;">&#34;3&#34;</span></strong>,&#34;0&#34;,&#34;3&#34;,&#34;8794&#34;,&#34;2&#34;,&#34;25&#34;,&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+<hr /> 
+<p>我们再次出队四个元素 &#xff1a;[<span style="color:#0d0016;">&#34;3&#34;,</span>&#34;0&#34;,&#34;3&#34;,&#34;8794&#34;<span style="color:#0d0016;">]&#xff0c;之后数组变为</span>&#xff1a;[&#34;2&#34;,&#34;25&#34;,&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+<p>根据出队元素得出&#xff0c;数据区解码后内容为&#xff1a;</p> 
+<p>[3,Integer,879]</p> 
+<p>出队的四个元素中最后一个元素剩余部分重新入队</p> 
+<p>[<span style="color:#fe2c24;"><strong>&#34;4&#34;</strong></span>,&#34;2&#34;,&#34;25&#34;,&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+<hr /> 
+<p>我们再次出队四个元素&#xff1a;<span style="color:#0d0016;">[&#34;4&#34;,</span>&#34;2&#34;,&#34;25&#34;,&#34;1&#34;]&#xff0c;之后数组变为&#xff1a;[&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]</p> 
+<p>此时我们发现出队的四个元素中&#xff0c;type信息为&#34;2&#34;&#xff0c;而&#34;2&#34;表示Compose类型&#xff0c;len信息为25&#xff0c;而data信息为&#34;1&#34;&#xff0c;根本不满足25长度要求。</p> 
+<p>因此&#xff0c;当我们出队到type信息时&#xff0c;应该特别关注下type是否为2&#xff0c;如果为2&#xff0c;则表示下面开始时Compose类型数据区子串了。</p> 
+<p>我们出队len信息后&#xff0c;数组剩余部分为&#xff1a;[&#34;1&#34;,&#34;1&#34;,&#34;10&#34;,&#34;I am Kitty2&#34;,&#34;0&#34;,&#34;2&#34;,&#34;44&#34;]&#xff0c;此时剩余部分&#xff0c;我们应该还原为待解码的原始串&#xff0c;因为len信息统计的时待解码状态的&#xff0c;即此时数组剩余部分用”#“拼接后得到&#xff1a;</p> 
+<blockquote> 
+ <p>1#1#10#I am Kitty2#0#2#44</p> 
+</blockquote> 
+<p>我们需要从这个信息中截取出25长度&#xff0c;即[0, 25)范围的子串作为当前Compose类型数据区的data信息。而上面串刚好就是25长度&#xff0c;因此整体都是当前Compose类型数据区的data信息。</p> 
+<blockquote> 
+ <p>1#1#10#I am Kitty2#0#2#44</p> 
+</blockquote> 
+<p>该data信息我们可以按照前面逻辑处理&#xff0c;即递归处理</p> 
+<p><img alt="" height="453" src="https://img-blog.csdnimg.cn/direct/046aca3dd6224fcea40483f0d0906bad.png" width="751" /></p> 
+<p>递归结果就是解码结果。</p> 
+<p>比较抽象&#xff0c;具体轻看代码实现&#xff0c;已添加详细注释说明。</p> 
+<p></p> 
+<p>另外&#xff0c;对于待解码串的格式校验&#xff0c;不好单独进行&#xff0c;我们只能看上面逻辑是否可以正常运行&#xff0c;如果发生异常&#xff0c;则说明解析异常&#xff0c;必然是格式存在问题。此时返回”DECODE_ERROR“。</p> 
+<p></p> 
+<h4 id="%E7%AE%97%E6%B3%95%E6%BA%90%E7%A0%81" style="background-color:transparent;">JS算法源码</h4> 
+<pre><code class="language-javascript">const rl &#61; require(&#34;readline&#34;).createInterface({ input: process.stdin });
+var iter &#61; rl[Symbol.asyncIterator]();
+const readline &#61; async () &#61;&gt; (await iter.next()).value;
+
+const type2num &#61; { Integer: &#34;0&#34;, String: &#34;1&#34;, Compose: &#34;2&#34; };
+const num2type &#61; { 0: &#34;Integer&#34;, 1: &#34;String&#34;, 2: &#34;Compose&#34; };
+
+void (async function () {
+  const command &#61; await readline();
+  const str &#61; await readline();
+
+  switch (command) {
+    case &#34;1&#34;:
+      console.log(encode(str));
+      break;
+    case &#34;2&#34;:
+      try {
+        console.log(decode(str));
+      } catch (e) {
+        // 待解码字符串如果解码过程中发生了异常&#xff0c;则说明格式或者嵌套关系存在问题&#xff0c;则此时报错
+        console.log(&#34;DECODE_ERROR&#34;);
+      }
+      break;
+  }
+})();
+
+// 校验待编码的字符串的格式
+function check_encode_str(str) {
+  // 这里通过栈结构检查代编码字符串中[,]字符的闭合
+  const stack &#61; [];
+
+  for (let c of str) {
+    if (c &#61;&#61; &#34;]&#34;) {
+      while (stack.length &gt; 0 &amp;&amp; stack.at(-1) !&#61; &#34;[&#34;) {
+        stack.pop();
+      }
+
+      if (stack.length &#61;&#61; 0) {
+        return false;
+      } else {
+        stack.pop();
+      }
+    } else {
+      stack.push(c);
+    }
+  }
+
+  return stack.length &#61;&#61; 0;
+}
+
+function check_encoded(pos, type, data) {
+  const num_regExp &#61; /^\d&#43;$/;
+  const str_regExp &#61; /^[0-9a-zA-Z\s]&#43;$/;
+
+  if (!num_regExp.test(pos)) {
+    return false;
+  }
+
+  if (type2num[type] &#61;&#61; undefined) {
+    return false;
+  }
+
+  if (type &#61;&#61; &#34;Integer&#34;) {
+    // Integer数据的校验&#xff1a;只能是数字
+    return num_regExp.test(data);
+  } else if (type &#61;&#61; &#34;String&#34;) {
+    // String数据的校验&#xff1a;只能是数字&#xff0c;大小写字母&#xff0c;空格
+    return str_regExp.test(data);
+  }
+
+  return true;
+}
+
+// 编码
+function encode(str) {
+  // 将数据与数据之间的逗号分隔去除
+  // 例如&#xff0c;待编码字符串是&#xff1a;
+  // [1,String,I am Mary],[2,Integer,23],[3,Long,1000000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]
+  // 去除数据与数据之间的逗号后&#xff0c;变为
+  // [1,String,I am Mary][2,Integer,23][3,Long,1000000][4,Compose,[1,String,I am Kitty][2,Integer,44]]
+  str &#61; str.replaceAll(&#34;],[&#34;, &#34;][&#34;);
+
+  // 待编码字符串的格式校验
+  if (!check_encode_str(str)) {
+    return &#34;ENCODE_ERROR&#34;;
+  }
+
+  // 由于后面我想用正则匹配取出字符串中 &#34;[位置,类型,值]&#34; 信息&#xff0c;而 &#39;[&#39;, &#39;]&#39; 字符又是正则表达式的元字符
+  // 因此为了简单实现正则&#xff0c;这里先将待编码字符串str中所有 &#39;[&#39; 替换为 &#39;&lt;&#39;, 所有 &#39;]&#39; 替换为 &#39;&gt;&#39;
+  // 例如&#xff0c;待编码字符串是&#xff1a;
+  // [1,String,I am Mary],[2,Integer,23],[3,Long,1000000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]
+  // 经过替换操作后&#xff0c;就变为了:
+  // &lt;1,String,I am Mary&gt;&lt;2,Integer,23&gt;&lt;3,Long,1000000&gt;&lt;4,Compose,&lt;1,String,I am Kitty&gt;&lt;2,Integer,44&gt;&gt;
+  let s &#61; str.replaceAll(&#34;[&#34;, &#34;&lt;&#34;).replaceAll(&#34;]&#34;, &#34;&gt;&#34;);
+
+  // 该正则用于匹配出待编码字符串中 &#34;&lt;位置,类型,值&gt;&#34;
+  const reg &#61; /&lt;([^&lt;&gt;]&#43;)&gt;/;
+
+  let match;
+  while ((match &#61; reg.exec(s))) {
+    // match[0] 是正则匹配到的完整子串 &#34;&lt;位置,类型,值&gt;&#34;
+    // match[1]用于获取是第一个正则捕获组&#xff0c;所谓正则捕获组&#xff0c;即正则表达式中()中的正则能匹配到的内容&#xff0c;如上正则捕获组即为&#xff1a;[^&lt;&gt;]&#43;, 匹配到的内容是&#xff1a;&#34;位置,类型,值&#34;
+    let [pos, type, data] &#61; match[1].split(&#34;,&#34;);
+
+    // encodeStr记录编码内容
+    let encodeStr &#61; &#34;&#34;;
+
+    // 检查数据格式是否正确&#xff0c;不正确则跳过该数据的编码
+    if (check_encoded(pos, type, data)) {
+      // 编码
+      encodeStr &#61; [pos, type2num[type], data.length, data].join(&#34;#&#34;);
+    }
+
+    // 将 “待编码数据&#xff1a;match[0]” 替换为 “编码后数据&#xff1a;encodeStr”
+    s &#61; s.replace(match[0], encodeStr);
+  }
+
+  return s;
+}
+
+function check_decoded(pos, type, data) {
+  const num_regExp &#61; /^\d&#43;$/;
+  const str_regExp &#61; /^[0-9a-zA-Z\s]&#43;$/;
+
+  if (!num_regExp.test(pos)) {
+    return false;
+  }
+
+  if (num2type[type] &#61;&#61; undefined) {
+    return false;
+  }
+
+  if (type &#61;&#61; &#34;0&#34;) {
+    return num_regExp.test(data);
+  } else if (type &#61;&#61; &#34;1&#34;) {
+    return str_regExp.test(data);
+  }
+
+  return true;
+}
+
+// 解码
+function decode(str) {
+  // 解码有如下难点&#xff1a;
+  // 1、各数据区之间没有分隔符&#xff0c;即无法直接分离出各个数据区
+  // 2、Compose类型数据区的&#34;数据&#34;部分也是一个或多个数据区组合
+
+  // 我这里直接将待解码字符串str按照&#39;#&#39;分割, 并加入到队列中, 方便头部出队
+  let queue &#61; str.split(&#34;#&#34;);
+
+  // res记录解码后的内容
+  const res &#61; [];
+
+  // 如果队列不空&#xff0c;则继续循环
+  while (queue.length &gt; 0) {
+    if (queue.length &lt; 4) {
+      throw &#34;DECODE_ERROR&#34;;
+    }
+
+    // 如果待解码字符串是合法的&#xff0c;则&#xff1a;
+    // 第一个#分割出来的内容认定为当前数据区的pos
+    const pos &#61; queue.shift();
+    // 第二个#分割出来的内容认定为当前数据区的type
+    let type &#61; queue.shift();
+    // 第三个#分割出来的内容认定为当前数据区的len
+    const len &#61; parseInt(queue.shift());
+
+    // 剩余部分重新以#拼接
+    const remain &#61; queue.join(&#34;#&#34;);
+    queue.length &#61; 0;
+
+    // remain字符串的 [0,len) 部分作为当前数据区的data信息
+    let data &#61; remain.slice(0, len);
+
+    if (remain.length &gt; len) {
+      // remain字符串的 [len,end) 部分是其他数据区&#xff0c;按照#分割后重新入队
+      queue &#61; remain.slice(len).split(&#34;#&#34;);
+    }
+
+    if (type &#61;&#61; &#34;2&#34;) {
+      data &#61; decode(data);
+    }
+
+    // pos, type, data都合法则进行解法
+    if (check_decoded(pos, type, data)) {
+      // 解码
+      res.push(&#96;[${pos},${num2type[type]},${data}]&#96;);
+    }
+  }
+
+  return res.join(&#34;,&#34;);
+}
+</code></pre> 
+<p></p> 
+<h4 style="background-color:transparent;">Java算法源码</h4> 
+<pre><code class="language-java">import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+    // 编码时&#xff0c;类型 -&gt; 数值
+    static HashMap&lt;String, String&gt; type2num &#61; new HashMap&lt;&gt;();
+    // 解码时&#xff0c;数值 -&gt; 类型
+    static HashMap&lt;String, String&gt; num2type &#61; new HashMap&lt;&gt;();
+
+    static Pattern num_RegExp &#61; Pattern.compile(&#34;^\\d&#43;$&#34;);
+    static Pattern str_RegExp &#61; Pattern.compile(&#34;^[0-9a-zA-Z\\s]&#43;$&#34;);
+
+
+    public static void main(String[] args) {
+        Scanner sc &#61; new Scanner(System.in);
+
+        int command &#61; Integer.parseInt(sc.nextLine());
+        String str &#61; sc.nextLine();
+
+        // 编码时&#xff0c;类型 -&gt; 数值
+        type2num.put(&#34;Integer&#34;, &#34;0&#34;);
+        type2num.put(&#34;String&#34;, &#34;1&#34;);
+        type2num.put(&#34;Compose&#34;, &#34;2&#34;);
+
+        // 解码时&#xff0c;数值 -&gt; 类型
+        num2type.put(&#34;0&#34;, &#34;Integer&#34;);
+        num2type.put(&#34;1&#34;, &#34;String&#34;);
+        num2type.put(&#34;2&#34;, &#34;Compose&#34;);
+
+        switch (command) {
+            case 1:
+                System.out.println(encode(str));
+                break;
+            case 2:
+                try {
+                    System.out.println(decode(str));
+                } catch (Exception e) {
+                    // 待解码字符串如果解码过程中发生了异常&#xff0c;则说明格式或者嵌套关系存在问题&#xff0c;则此时报错
+                    System.out.println(&#34;DECODE_ERROR&#34;);
+                }
+                break;
+        }
+    }
+
+    // 校验待编码的字符串的格式
+    public static boolean check_encode_str(String str) {
+        // 这里通过栈结构检查代编码字符串中[,]字符的闭合
+        LinkedList&lt;Character&gt; stack &#61; new LinkedList&lt;&gt;();
+
+        for (int i &#61; 0; i &lt; str.length(); i&#43;&#43;) {
+            char c &#61; str.charAt(i);
+
+            if (c &#61;&#61; &#39;]&#39;) {
+                while (!stack.isEmpty() &amp;&amp; stack.getLast() !&#61; &#39;[&#39;) {
+                    stack.removeLast();
+                }
+
+                if (stack.isEmpty()) {
+                    return false;
+                } else {
+                    stack.removeLast();
+                }
+
+            } else {
+                stack.addLast(c);
+            }
+        }
+
+        return stack.isEmpty();
+    }
+
+    public static boolean check_encoded(String pos, String type, String data) {
+        if (!num_RegExp.matcher(pos).find()) {
+            return false;
+        }
+
+        if (!type2num.containsKey(type)) {
+            return false;
+        }
+
+        if (&#34;Integer&#34;.equals(type)) {
+            return num_RegExp.matcher(data).find();
+        } else if (&#34;String&#34;.equals(type)) {
+            return str_RegExp.matcher(data).find();
+        }
+
+        return true;
+    }
+
+    // 编码
+    public static String encode(String s) {
+        // 将数据与数据之间的逗号分隔去除
+        // 例如&#xff0c;待编码字符串是&#xff1a;
+        // [1,String,I am Mary],[2,Integer,23],[3,Long,1000000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]
+        // 去除数据与数据之间的逗号后&#xff0c;变为
+        // [1,String,I am Mary][2,Integer,23][3,Long,1000000][4,Compose,[1,String,I am Kitty][2,Integer,44]]
+        s &#61; s.replaceAll(&#34;],\\[&#34;, &#34;][&#34;);
+
+        // 待编码字符串的格式校验
+        if (!check_encode_str(s)) {
+            return &#34;ENCODE_ERROR&#34;;
+        }
+
+        // 由于后面我想用正则匹配取出字符串中 &#34;[位置,类型,值]&#34; 信息&#xff0c;而 &#39;[&#39;, &#39;]&#39; 字符又是正则表达式的元字符
+        // 因此为了简单实现正则&#xff0c;这里先将待编码字符串str中所有 &#39;[&#39; 替换为 &#39;&lt;&#39;, 所有 &#39;]&#39; 替换为 &#39;&gt;&#39;
+        // 例如&#xff0c;待编码字符串是&#xff1a;
+        // [1,String,I am Mary],[2,Integer,23],[3,Long,1000000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]
+        // 经过替换操作后&#xff0c;就变为了:
+        // &lt;1,String,I am Mary&gt;&lt;2,Integer,23&gt;&lt;3,Long,1000000&gt;&lt;4,Compose,&lt;1,String,I am Kitty&gt;&lt;2,Integer,44&gt;&gt;
+        s &#61; s.replaceAll(&#34;\\[&#34;, &#34;&lt;&#34;).replaceAll(&#34;]&#34;, &#34;&gt;&#34;);
+
+        // 该正则用于匹配出待编码字符串中 &#34;&lt;位置,类型,值&gt;&#34;
+        Pattern p &#61; Pattern.compile(&#34;&lt;([^&lt;&gt;]&#43;)&gt;&#34;);
+
+        while (true) {
+            Matcher m &#61; p.matcher(s);
+            if (!m.find()) break;
+
+            // m.group(0) 是正则匹配到的完整子串 &#34;&lt;位置,类型,值&gt;&#34;
+            // m.group(1)用于获取是第一个正则捕获组&#xff0c;所谓正则捕获组&#xff0c;即正则表达式中()中的正则能匹配到的内容&#xff0c;如上正则捕获组即为&#xff1a;[^&lt;&gt;]&#43;, 匹配到的内容是&#xff1a;&#34;位置,类型,值&#34;
+            String[] tmp &#61; m.group(1).split(&#34;,&#34;);
+
+            String pos &#61; tmp[0];
+            String type &#61; tmp[1];
+            String data &#61; tmp[2];
+
+            // sj记录编码内容
+            String encodeStr &#61; &#34;&#34;;
+
+            if (check_encoded(pos, type, data)) {
+                encodeStr &#61; pos &#43; &#34;#&#34; &#43; type2num.get(type) &#43; &#34;#&#34; &#43; data.length() &#43; &#34;#&#34; &#43; data;
+            }
+
+            s &#61; s.replace(m.group(0), encodeStr); // 将匹配到的内容 替换为 编码后的内容
+        }
+
+        return s;
+    }
+
+    public static boolean check_decoded(String pos, String type, String data) {
+        if (!num_RegExp.matcher(pos).find()) {
+            return false;
+        }
+
+        if (!num2type.containsKey(type)) {
+            return false;
+        }
+
+        if (&#34;0&#34;.equals(type)) {
+            return num_RegExp.matcher(data).find();
+        } else if (&#34;1&#34;.equals(type)) {
+            return str_RegExp.matcher(data).find();
+        }
+
+        return true;
+    }
+
+
+    // 解码
+    public static String decode(String str) {
+        // 解码有如下难点&#xff1a;
+        // 1、各数据区之间没有分隔符&#xff0c;即无法直接分离出各个数据区
+        // 2、Compose类型数据区的&#34;数据&#34;部分也是一个或多个数据区组合
+
+        // 我这里直接将待解码字符串str按照&#39;#&#39;分割, 并加入到队列中, 方便头部出队
+        LinkedList&lt;String&gt; queue &#61; new LinkedList&lt;&gt;();
+        Collections.addAll(queue, str.split(&#34;#&#34;));
+
+        // res记录解码后的内容
+        StringJoiner res &#61; new StringJoiner(&#34;,&#34;);
+
+        // 如果队列不空&#xff0c;则继续循环
+        while (!queue.isEmpty()) {
+            // 如果待解码字符串是合法的&#xff0c;则&#xff1a;
+            // 第一个#分割出来的内容认定为当前数据区的pos
+            String pos &#61; queue.removeFirst();
+            // 第二个#分割出来的内容认定为当前数据区的type
+            String type &#61; queue.removeFirst();
+            // 第三个#分割出来的内容认定为当前数据区的len
+            int len &#61; Integer.parseInt(queue.removeFirst());
+
+            // 剩余部分重新以#拼接
+            String remain &#61; String.join(&#34;#&#34;, queue);
+            queue.clear();
+
+            // remain字符串的 [0,len) 部分作为当前数据区的data信息
+            String data &#61; remain.substring(0, len);
+
+            if (remain.length() &gt; len) {
+                // remain字符串的 [len,end) 部分是其他数据区&#xff0c;按照#分割后重新入队
+                Collections.addAll(queue, remain.substring(len).split(&#34;#&#34;));
+            }
+
+            if (&#34;2&#34;.equals(type)) {
+                data &#61; decode(data);
+            }
+
+            // pos, type, data都合法则进行解法
+            if (check_decoded(pos, type, data)) {
+                // 解码
+                res.add(&#34;[&#34; &#43; pos &#43; &#34;,&#34; &#43; num2type.get(type) &#43; &#34;,&#34; &#43; data &#43; &#34;]&#34;);
+            }
+        }
+
+        return res.toString();
+    }
+}</code></pre> 
+<p></p> 
+<h4>Python算法源码</h4> 
+<pre><code class="language-python">import re
+
+# 输入获取
+command &#61; input()
+s &#61; input()
+
+# 全局变量
+type2num &#61; {&#34;Integer&#34;: &#34;0&#34;, &#34;String&#34;: &#34;1&#34;, &#34;Compose&#34;: &#34;2&#34;}
+num2type &#61; {&#34;0&#34;: &#34;Integer&#34;, &#34;1&#34;: &#34;String&#34;, &#34;2&#34;: &#34;Compose&#34;}
+
+num_regExp &#61; re.compile(&#34;^\\d&#43;$&#34;)
+str_regExp &#61; re.compile(&#34;^[0-9a-zA-Z\\s]&#43;$&#34;)
+
+
+# 校验待编码的字符串的格式
+def check_encode_str(s):
+    # 这里通过栈结构检查代编码字符串中[,]字符的闭合
+    stack &#61; []
+
+    for c in s:
+        if c &#61;&#61; &#39;]&#39;:
+            while len(stack) &gt; 0 and stack[-1] !&#61; &#39;[&#39;:
+                stack.pop()
+
+            if len(stack) &#61;&#61; 0:
+                return False
+            else:
+                stack.pop()
+        else:
+            stack.append(c)
+
+    return len(stack) &#61;&#61; 0
+
+
+def check_encoded(pos, typ, data):
+    if not num_regExp.match(pos):
+        return False
+
+    if typ not in type2num:
+        return False
+
+    if typ &#61;&#61; &#34;Integer&#34;:
+        return num_regExp.match(data)
+    elif typ &#61;&#61; &#34;String&#34;:
+        return str_regExp.match(data)
+
+    return True
+
+
+# 编码
+def encode():
+    global s
+
+    # 将数据与数据之间的逗号分隔去除
+    # 例如&#xff0c;待编码字符串是&#xff1a;
+    # [1,String,I am Mary],[2,Integer,23],[3,Long,1000000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]
+    # 去除数据与数据之间的逗号后&#xff0c;变为
+    # [1,String,I am Mary][2,Integer,23][3,Long,1000000][4,Compose,[1,String,I am Kitty][2,Integer,44]]
+    s &#61; s.replace(&#34;],[&#34;, &#34;][&#34;)
+
+    # 待编码字符串的格式校验
+    if not check_encode_str(s):
+        return &#34;ENCODE_ERROR&#34;
+
+    # 由于后面我想用正则匹配取出字符串中 &#34;[位置,类型,值]&#34; 信息&#xff0c;而 &#39;[&#39;, &#39;]&#39; 字符又是正则表达式的元字符
+    # 因此为了简单实现正则&#xff0c;这里先将待编码字符串str中所有 &#39;[&#39; 替换为 &#39;&lt;&#39;, 所有 &#39;]&#39; 替换为 &#39;&gt;&#39;
+    # 例如&#xff0c;待编码字符串是&#xff1a;
+    # [1,String,I am Mary][2,Integer,23][3,Long,1000000][4,Compose,[1,String,I am Kitty][2,Integer,44]]
+    # 经过替换操作后&#xff0c;就变为了:
+    # &lt;1,String,I am Mary&gt;&lt;2,Integer,23&gt;&lt;3,Long,1000000&gt;&lt;4,Compose,&lt;1,String,I am Kitty&gt;&lt;2,Integer,44&gt;&gt;
+    s &#61; s.replace(&#34;[&#34;, &#34;&lt;&#34;).replace(&#34;]&#34;, &#34;&gt;&#34;)
+
+    # 该正则用于匹配出待编码字符串中 &#34;&lt;位置,类型,值&gt;&#34;
+    p &#61; re.compile(&#34;&lt;([^&lt;&gt;]&#43;)&gt;&#34;)
+
+    m &#61; p.search(s)
+    while m is not None:
+        # m.group(0) 是正则匹配到的完整子串 &#34;&lt;位置,类型,值&gt;&#34;
+        # m.group(1)用于获取是第一个正则捕获组&#xff0c;所谓正则捕获组&#xff0c;即正则表达式中()中的正则能匹配到的内容&#xff0c;如上正则捕获组即为&#xff1a;[^&lt;&gt;]&#43;, 匹配到的内容是&#xff1a;&#34;位置,类型,值&#34;
+        pos, typ, data &#61; m.group(1).split(&#34;,&#34;)
+
+        # res记录编码内容
+        res &#61; []
+
+        if check_encoded(pos, typ, data):
+            res.append(pos)
+            res.append(type2num[typ])
+            res.append(str(len(data)))
+            res.append(data)
+
+        s &#61; s.replace(m[0], &#34;#&#34;.join(res))  # 将匹配到的内容 替换为 编码后的内容
+        m &#61; p.search(s)  # 重新匹配
+
+    return s
+
+
+def check_decoded(pos, typ, data):
+    if not num_regExp.match(pos):
+        return False
+
+    if typ not in num2type:
+        return False
+
+    if typ &#61;&#61; &#34;0&#34;:
+        return num_regExp.match(data)
+    elif typ &#61;&#61; &#34;1&#34;:
+        return str_regExp.match(data)
+
+    return True
+
+
+# 编码
+def decode(string):
+    # 解码有如下难点&#xff1a;
+    # 1、各数据区之间没有分隔符&#xff0c;即无法直接分离出各个数据区
+    # 2、Compose类型数据区的&#34;数据&#34;部分也是一个或多个数据区组合
+
+    # 我这里直接将待解码字符串str按照&#39;#&#39;分割, 并加入到队列中, 方便头部出队
+    queue &#61; string.split(&#34;#&#34;)
+
+    # res记录解码后的内容
+    res &#61; []
+
+    # 如果队列不空&#xff0c;则继续循环
+    while len(queue) &gt; 0:
+        # 如果待解码字符串是合法的&#xff0c;则&#xff1a;
+        # 第一个#分割出来的内容认定为当前数据区的pos
+        pos &#61; queue.pop(0)
+        # 第二个#分割出来的内容认定为当前数据区的type
+        typ &#61; queue.pop(0)
+        # 第三个#分割出来的内容认定为当前数据区的len
+        length &#61; int(queue.pop(0))
+
+        # 剩余部分重新以#拼接
+        remain &#61; &#34;#&#34;.join(queue)
+        queue.clear()
+
+        # remain字符串的 [0,len) 部分作为当前数据区的data信息
+        data &#61; remain[:length]
+
+        if len(remain) &gt; length:
+            # remain字符串的 [len,end) 部分是其他数据区&#xff0c;按照#分割后重新入队
+            queue &#61; remain[length:].split(&#34;#&#34;)
+
+        if typ &#61;&#61; &#34;2&#34;:
+            data &#61; decode(data)
+
+        # pos, type, data都合法则进行解法
+        if check_decoded(pos, typ, data):
+            # 解码
+            res.append(f&#34;[{pos},{num2type[typ]},{data}]&#34;)
+
+    return &#34;,&#34;.join(res)
+
+
+def solution():
+    if command &#61;&#61; &#39;1&#39;:
+        print(encode())
+    elif command &#61;&#61; &#39;2&#39;:
+        try:
+            print(decode(s))
+        except:
+            # 待解码字符串如果解码过程中发生了异常&#xff0c;则说明格式或者嵌套关系存在问题&#xff0c;则此时报错
+            print(&#34;DECODE_ERROR&#34;)
+
+
+solution()
+</code></pre> 
+<p></p> 
+<h4 style="background-color:transparent;">C算法源码</h4> 
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define MAX_SIZE 1001
+#define TRUE 1
+#define FALSE 0
+
+/* 链表实现 */
+typedef struct ListNode {
+    char *ele;
+    struct ListNode *prev;
+    struct ListNode *next;
+} ListNode;
+
+typedef struct LinkedList {
+    int size;
+    ListNode *head;
+    ListNode *tail;
+} LinkedList;
+
+LinkedList *new_LinkedList() {
+    LinkedList *link &#61; (LinkedList *) malloc(sizeof(LinkedList));
+    link-&gt;size &#61; 0;
+    link-&gt;head &#61; NULL;
+    link-&gt;tail &#61; NULL;
+    return link;
+}
+
+void addLast_LinkedList(LinkedList *link, char *ele) {
+    ListNode *node &#61; (ListNode *) malloc(sizeof(ListNode));
+    node-&gt;ele &#61; (char *) calloc(MAX_SIZE, sizeof(char));
+    strcpy(node-&gt;ele, ele);
+    node-&gt;prev &#61; NULL;
+    node-&gt;next &#61; NULL;
+
+    if (link-&gt;size &#61;&#61; 0) {
+        link-&gt;head &#61; node;
+        link-&gt;tail &#61; node;
+    } else {
+        link-&gt;tail-&gt;next &#61; node;
+        node-&gt;prev &#61; link-&gt;tail;
+        link-&gt;tail &#61; node;
+    }
+
+    link-&gt;size&#43;&#43;;
+}
+
+char *removeFirst_LinkedList(LinkedList *link) {
+    if (link-&gt;size &#61;&#61; 0) exit(-1);
+
+    ListNode *removed &#61; link-&gt;head;
+
+    if (link-&gt;size &#61;&#61; 1) {
+        link-&gt;head &#61; NULL;
+        link-&gt;tail &#61; NULL;
+    } else {
+        link-&gt;head &#61; link-&gt;head-&gt;next;
+        link-&gt;head-&gt;prev &#61; NULL;
+    }
+
+    link-&gt;size--;
+
+    return removed-&gt;ele;
+}
+
+int isInteger(const char *s) {
+    int i &#61; 0;
+    while (s[i] !&#61; &#39;\0&#39;) {
+        if (s[i] &lt; &#39;0&#39; || s[i] &gt; &#39;9&#39;) {
+            return 0;
+        }
+        i&#43;&#43;;
+    }
+
+    return 1;
+}
+
+int isValidStr(const char *s) {
+    int i &#61; 0;
+
+    while (s[i] !&#61; &#39;\0&#39;) {
+        char c &#61; s[i];
+
+        int flag &#61; (c &gt;&#61; &#39;0&#39; &amp;&amp; c &lt;&#61; &#39;9&#39;) || (c &gt;&#61; &#39;a&#39; &amp;&amp; c &lt;&#61; &#39;z&#39;) || (c &gt;&#61; &#39;A&#39; &amp;&amp; c &lt;&#61; &#39;Z&#39;) || c &#61;&#61; &#39; &#39;;
+
+        if (!flag) {
+            return 0;
+        }
+
+        i&#43;&#43;;
+    }
+
+    return 1;
+}
+
+/* 校验待编码的字符串的格式 */
+int check_encode_str(char *s) {
+    // 替换s中的 &#34;],[&#34; 为 &#34;][&#34;
+    // 主要是为了避免数据区之间的逗号&#xff0c;影响后面栈对数据区格式的判断
+    char *pos &#61; strstr(s, &#34;],[&#34;);
+    while (pos !&#61; NULL) {
+        long long i &#61; pos - s &#43; 1;
+
+        while (s[i] !&#61; &#39;\0&#39;) {
+            s[i] &#61; s[i &#43; 1];
+            i&#43;&#43;;
+        }
+
+        pos &#61; strstr(s, &#34;],[&#34;);
+    }
+
+    // 这里通过栈结构检查代编码字符串中[,]字符的闭合
+    char stack[MAX_SIZE] &#61; {&#39;\0&#39;};
+    int stack_size &#61; 0;
+
+    int i &#61; 0;
+    while (s[i] !&#61; &#39;\0&#39;) {
+
+        if (s[i] &#61;&#61; &#39;]&#39;) {
+            while (stack_size &gt; 0 &amp;&amp; stack[stack_size - 1] !&#61; &#39;[&#39;) {
+                stack_size--;
+            }
+
+            if (stack_size &#61;&#61; 0) {
+                return FALSE;
+            } else {
+                stack_size--;
+            }
+        } else {
+            stack[stack_size&#43;&#43;] &#61; s[i];
+        }
+
+        i&#43;&#43;;
+    }
+
+    return stack_size &#61;&#61; 0;
+}
+
+/* 编码 */
+void encode(char *s) {
+    // 待编码字符串的格式校验
+    if (!check_encode_str(s)) {
+        printf(&#34;ENCODE_ERROR\n&#34;);
+        return;
+    }
+
+    while (TRUE) {
+        // 这里 l, r 用于找到待编码串中 &#34;[位置,类型,值]&#34; 子串位置
+        int l &#61; 0;
+        while (s[l] !&#61; &#39;\0&#39; &amp;&amp; s[l] !&#61; &#39;[&#39;) {
+            // l 指向 &#39;[&#39; 位置
+            l&#43;&#43;;
+        }
+
+        // 如果l找到末尾了也没找到&#xff0c;则所有 &#34;[位置,类型,值]&#34; 子串被处理完了
+        if (s[l] &#61;&#61; &#39;\0&#39;) {
+            break;
+        }
+
+        int r &#61; l &#43; 1;
+        while (s[r] !&#61; &#39;\0&#39;) {
+            // r 指向 &#39;]&#39; 位置, 因此找到 ‘]’ 即停止r扫描
+            if (s[r] &#61;&#61; &#39;]&#39;) {
+                break;
+            }
+
+            // 由于存在&#34;[1,Compose,[1,Integer,12]]&#34;嵌套结构&#xff0c;因此r扫描过程中&#xff0c;可能会扫描到&#39;[&#39;,此时需要更新l指向该&#39;[&#39;位置
+            if (s[r] &#61;&#61; &#39;[&#39;) {
+                l &#61; r;
+            }
+
+            r&#43;&#43;;
+        }
+
+        // tmp用于缓存 &#34;[位置,类型,值]&#34; 子串中 &#34;位置,类型,值&#34; 的信息
+        char tmp[MAX_SIZE] &#61; {&#39;\0&#39;};
+        strncpy(tmp, s &#43; l &#43; 1, r - l - 1);
+
+        // 从tmp中解析出数据区的 pos, type, data信息
+        char *pos &#61; strtok(tmp, &#34;,&#34;);
+        char *type &#61; strtok(NULL, &#34;,&#34;);
+        char *data &#61; strtok(NULL, &#34;,&#34;);
+
+        // 记录数据的pos,type,data是否合法
+        int flag &#61; TRUE;
+
+        if (strcmp(type, &#34;Integer&#34;) &#61;&#61; 0) {
+            type &#61; &#34;0&#34;;
+            // Integer类型的数据只能是数字
+            flag &#61; isInteger(data);
+        } else if (strcmp(type, &#34;String&#34;) &#61;&#61; 0) {
+            type &#61; &#34;1&#34;;
+            // String类型的数据只能是数字、字母、空格
+            flag &#61; isValidStr(data);
+        } else if (strcmp(type, &#34;Compose&#34;) &#61;&#61; 0) {
+            type &#61; &#34;2&#34;;
+        } else {
+            // 非法type
+            flag &#61; FALSE;
+        }
+
+        // 位置只能是数字
+        if (flag) {
+            flag &#61; isInteger(pos);
+        }
+
+        // repl记录数据区编码后的内容
+        char repl[MAX_SIZE] &#61; {&#39;\0&#39;};
+
+        // pos, type, data都合法则进行编码
+        if (flag) {
+            // 编码内容为&#xff1a;pos#type#dataLen#data
+            strcat(repl, pos);
+            strcat(repl, &#34;#&#34;);
+
+            strcat(repl, type);
+            strcat(repl, &#34;#&#34;);
+
+            char len[10] &#61; {&#39;\0&#39;};
+            sprintf(len, &#34;%lld&#34;, strlen(data));
+
+            strcat(repl, len);
+            strcat(repl, &#34;#&#34;);
+
+            strcat(repl, data);
+        }
+
+        // 将待编码串中 &#34;[位置,类型,值]&#34; 替换为编码后的子串 “pos#type#dataLen#data”
+        char ss[MAX_SIZE] &#61; {&#39;\0&#39;};
+        strncat(ss, s, l);
+        strcat(ss, repl);
+        strcat(ss, s &#43; r &#43; 1);
+
+        memset(s, &#39;\0&#39;, MAX_SIZE);
+        s &#61; strcpy(s, ss);
+    }
+
+    printf(&#34;%s\n&#34;, s);
+}
+
+
+LinkedList *split(char *s, char *separator) {
+    char *token &#61; strtok(s, separator);
+
+    LinkedList *queue &#61; new_LinkedList();
+
+    while (token !&#61; NULL) {
+        addLast_LinkedList(queue, token);
+        token &#61; strtok(NULL, separator);
+    }
+
+    return queue;
+}
+
+char *pop_join(LinkedList *queue, char *separator) {
+    char *res &#61; (char *) calloc(MAX_SIZE, sizeof(char));
+    strcat(res, removeFirst_LinkedList(queue));
+
+    while (queue-&gt;size &gt; 0) {
+        strcat(res, separator);
+        strcat(res, removeFirst_LinkedList(queue));
+    }
+
+    return res;
+}
+
+/* 解码 */
+char *decode(char *s) {
+    // 解码有如下难点&#xff1a;
+    // 1、各数据区之间没有分隔符&#xff0c;即无法直接分离出各个数据区
+    // 2、Compose类型数据区的&#34;数据&#34;部分也是一个或多个数据区组合
+
+    // 我这里直接将待解码字符串str按照&#39;#&#39;分割, 并加入到队列中, 方便头部出队
+    LinkedList *queue &#61; split(s, &#34;#&#34;);
+
+    // res记录解码后的内容
+    LinkedList *res &#61; new_LinkedList();
+
+    // 如果队列不空&#xff0c;则继续循环
+    while (queue-&gt;size &gt; 0) {
+        if (queue-&gt;size &lt; 4) {
+            return &#34;DECODE_ERROR&#34;;
+        }
+
+        // 如果待解码字符串是合法的&#xff0c;则&#xff1a;
+        // 第一个#分割出来的内容认定为当前数据区的pos
+        char *pos &#61; removeFirst_LinkedList(queue);
+        // 第二个#分割出来的内容认定为当前数据区的type
+        char *type &#61; removeFirst_LinkedList(queue);
+        // 第三个#分割出来的内容认定为当前数据区的len
+        int len &#61; atoi(removeFirst_LinkedList(queue));
+
+        // 剩余部分重新以#拼接
+        char *remain &#61; pop_join(queue, &#34;#&#34;);
+
+        // remain字符串的 [0,len) 部分作为当前数据区的data信息
+        char data[MAX_SIZE] &#61; {&#39;\0&#39;};
+        strncpy(data, remain, len);
+
+        if (strlen(remain) &gt; len) {
+            // remain字符串的 [len,end) 部分是其他数据区&#xff0c;按照#分割后重新入队
+            queue &#61; split((remain &#43; len), &#34;#&#34;);
+        }
+
+        if (strcmp(type, &#34;2&#34;) &#61;&#61; 0) {
+            strcpy(data, decode(data));
+        }
+
+        // 记录数据区的pos,type,data是否合法
+        int flag &#61; TRUE;
+
+        if (strcmp(type, &#34;0&#34;) &#61;&#61; 0) {
+            strcpy(type, &#34;Integer&#34;);
+            // Integer类型的数据只能是数字
+            flag &#61; isInteger(data);
+        } else if (strcmp(type, &#34;1&#34;) &#61;&#61; 0) {
+            strcpy(type, &#34;String&#34;);
+            // String类型的数据只能是数字、字母、空格
+            flag &#61; isValidStr(data);
+        } else if (strcmp(type, &#34;2&#34;) &#61;&#61; 0) {
+            strcpy(type, &#34;Compose&#34;);
+        } else {
+            // 非法类型
+            flag &#61; FALSE;
+            continue;
+        }
+
+        if (flag) {
+            // 位置只能是数字
+            flag &#61; isInteger(pos);
+        }
+
+        //  pos, type, data都合法则进行解码
+        if (flag) {
+            // 解码
+            char ele[MAX_SIZE] &#61; {&#39;\0&#39;};
+            strcat(ele, &#34;[&#34;);
+            strcat(ele, pos);
+            strcat(ele, &#34;,&#34;);
+            strcat(ele, type);
+            strcat(ele, &#34;,&#34;);
+            strcat(ele, data);
+            strcat(ele, &#34;]&#34;);
+
+            // 收集解码数据&#xff0c;最后以逗号拼接
+            addLast_LinkedList(res, ele);
+        }
+    }
+
+    return pop_join(res, &#34;,&#34;);
+}
+
+int main() {
+    int command;
+    scanf(&#34;%d&#34;, &amp;command);
+    getchar();
+
+    char s[MAX_SIZE] &#61; {&#39;\0&#39;};
+    gets(s);
+
+    if (command &#61;&#61; 1) {
+        encode(s);
+    } else if (command &#61;&#61; 2) {
+        printf(&#34;%s&#34;, decode(s));
+    }
+
+    return 0;
+}</code></pre> 
+<p></p> 
+<h4 style="background-color:transparent;">C&#43;&#43;算法源码</h4> 
+<pre><code class="language-cpp">#include&lt;bits/stdc&#43;&#43;.h&gt;
+
+using namespace std;
+
+map&lt;string, string&gt; type2num;
+map&lt;string, string&gt; num2type;
+
+regex num_RegExp(&#34;^\\d&#43;$&#34;);
+regex str_RegExp(&#34;^[0-9a-zA-Z\\s]&#43;$&#34;);
+
+// 校验待编码的字符串的格式
+bool check_encode_str(string &amp;s) {
+    // 这里通过栈结构检查代编码字符串中[,]字符的闭合
+    stack&lt;char&gt; stk;
+
+    for (const auto &amp;c: s) {
+        if (c &#61;&#61; &#39;]&#39;) {
+            while (!stk.empty() &amp;&amp; stk.top() !&#61; &#39;[&#39;) {
+                stk.pop();
+            }
+
+            if (stk.empty()) {
+                return false;
+            } else {
+                stk.pop();
+            }
+        } else {
+            stk.push(c);
+        }
+    }
+
+    return stk.empty();
+}
+
+bool check_encoded(string &amp;pos, string &amp;type, string &amp;data) {
+    if (!regex_match(pos, num_RegExp)) {
+        return false;
+    }
+
+    if (type2num.count(type) &#61;&#61; 0) {
+        return false;
+    }
+
+    if (&#34;Integer&#34; &#61;&#61; type) {
+        return regex_match(data, num_RegExp);
+    } else if (&#34;String&#34; &#61;&#61; type) {
+        return regex_match(data, str_RegExp);
+    }
+
+    return true;
+}
+
+string encode(string &amp;s) {
+    // 将数据与数据之间的逗号分隔去除, 即替换&#34;],[&#34;为&#34;][&#34;
+    size_t start &#61; s.find(&#34;],[&#34;);
+    while (start !&#61; string::npos) {
+        s.replace(start, 3, &#34;][&#34;);
+        start &#61; s.find(&#34;],[&#34;);
+    }
+
+    // 待编码字符串的格式校验
+    if (!check_encode_str(s)) {
+        return &#34;ENCODE_ERROR&#34;;
+    }
+
+    // 由于后面我想用正则匹配取出字符串中 &#34;[位置,类型,值]&#34; 信息&#xff0c;而 &#39;[&#39;, &#39;]&#39; 字符又是正则表达式的元字符
+    // 因此为了简单实现正则&#xff0c;这里先将待编码字符串str中所有 &#39;[&#39; 替换为 &#39;&lt;&#39;, 所有 &#39;]&#39; 替换为 &#39;&gt;&#39;
+    // 例如&#xff0c;待编码字符串是&#xff1a;
+    // [1,String,I am Mary][2,Integer,23][3,Long,1000000][4,Compose,[1,String,I am Kitty][2,Integer,44]]
+    // 经过替换操作后&#xff0c;就变为了:
+    // &lt;1,String,I am Mary&gt;&lt;2,Integer,23&gt;&lt;3,Long,1000000&gt;&lt;4,Compose,&lt;1,String,I am Kitty&gt;&lt;2,Integer,44&gt;&gt;
+    for (int i &#61; 0; i &lt; s.length(); i&#43;&#43;) {
+        if (s[i] &#61;&#61; &#39;[&#39;) {
+            s[i] &#61; &#39;&lt;&#39;;
+        } else if (s[i] &#61;&#61; &#39;]&#39;) {
+            s[i] &#61; &#39;&gt;&#39;;
+        }
+    }
+
+    // 该正则用于匹配出待编码字符串中 &#34;&lt;位置,类型,值&gt;&#34;
+    regex p(&#34;&lt;([^&lt;&gt;]&#43;)&gt;&#34;);
+
+    smatch m;
+    while (regex_search(s, m, p)) {
+        // m.group(0) 是正则匹配到的完整子串 &#34;&lt;位置,类型,值&gt;&#34;
+        // m.group(1)用于获取是第一个正则捕获组&#xff0c;所谓正则捕获组&#xff0c;即正则表达式中()中的正则能匹配到的内容&#xff0c;如上正则捕获组即为&#xff1a;[^&lt;&gt;]&#43;, 匹配到的内容是&#xff1a;&#34;位置,类型,值&#34;
+        stringstream ss(m.str(1));
+
+        string pos;
+        getline(ss, pos, &#39;,&#39;);
+
+        string type;
+        getline(ss, type, &#39;,&#39;);
+
+        string data;
+        getline(ss, data, &#39;,&#39;);
+
+        // res记录编码内容
+        string res;
+
+        if (check_encoded(pos, type, data)) {
+            res &#43;&#61; pos &#43; &#34;#&#34;;
+            res &#43;&#61; type2num[type] &#43; &#34;#&#34;;
+            res &#43;&#61; to_string(data.length()) &#43; &#34;#&#34;;
+            res &#43;&#61; data;
+        }
+
+        s &#61; s.replace(s.find(m.str(0)), m.str(0).length(), res); // 将匹配到的内容 替换为 编码后的内容
+    }
+
+    return s;
+}
+
+deque&lt;string&gt; split(const string &amp;s, char separator) {
+    stringstream ss(s);
+    string token;
+
+    deque&lt;string&gt; queue;
+    while (getline(ss, token, separator)) {
+        queue.push_back(token);
+    }
+
+    return queue;
+}
+
+string pop_join(deque&lt;string&gt; &amp;queue, char separator) {
+    string res &#61; queue.front();
+    queue.pop_front();
+
+    while (!queue.empty()) {
+        res &#43;&#61; separator;
+        res &#43;&#61; queue.front();
+        queue.pop_front();
+    }
+
+    return res;
+}
+
+bool check_decoded(string &amp;pos, string &amp;type, string &amp;data) {
+    if (!regex_match(pos, num_RegExp)) {
+        return false;
+    }
+
+    if (num2type.count(type) &#61;&#61; 0) {
+        return false;
+    }
+
+    if (&#34;0&#34; &#61;&#61; type) {
+        return regex_match(data, num_RegExp);
+    } else if (&#34;1&#34; &#61;&#61; type) {
+        return regex_match(data, str_RegExp);
+    }
+
+    return true;
+}
+
+// 解码
+string decode(const string &amp;str) noexcept(false) {
+    // 解码有如下难点&#xff1a;
+    // 1、各数据区之间没有分隔符&#xff0c;即无法直接分离出各个数据区
+    // 2、Compose类型数据区的&#34;数据&#34;部分也是一个或多个数据区组合
+
+    // 我这里直接将待解码字符串str按照&#39;#&#39;分割, 并加入到队列中, 方便头部出队
+    deque&lt;string&gt; queue &#61; split(str, &#39;#&#39;);
+
+    // res记录解码后的内容
+    deque&lt;string&gt; res;
+
+    // 如果队列不空&#xff0c;则继续循环
+    while (!queue.empty()) {
+        if (queue.size() &lt; 4) {
+            return &#34;DECODE_ERROR&#34;;
+        }
+
+        // 如果待解码字符串是合法的&#xff0c;则&#xff1a;
+        // 第一个#分割出来的内容认定为当前数据区的pos
+        string pos &#61; queue.front();
+        queue.pop_front();
+
+        // 第二个#分割出来的内容认定为当前数据区的type
+        string type &#61; queue.front();
+        queue.pop_front();
+
+        // 第三个#分割出来的内容认定为当前数据区的len
+        int len &#61; stoi(queue.front());
+        queue.pop_front();
+
+        // 剩余部分重新以#拼接
+        string remain &#61; pop_join(queue, &#39;#&#39;);
+
+        // remain字符串的 [0,len) 部分作为当前数据区的data信息
+        string data &#61; remain.substr(0, len);
+
+        if (remain.length() &gt; len) {
+            // remain字符串的 [len,end) 部分是其他数据区&#xff0c;按照#分割后重新入队
+            queue &#61; split(remain.substr(len), &#39;#&#39;);
+        }
+
+        if (&#34;2&#34; &#61;&#61; type) {
+            data &#61; decode(data);
+        }
+
+        // pos, type, data都合法则进行解法
+        if (check_decoded(pos, type, data)) {
+            // 解码
+            res.emplace_back(&#34;[&#34; &#43; pos &#43; &#34;,&#34; &#43; num2type[type] &#43; &#34;,&#34; &#43; data &#43; &#34;]&#34;);
+        }
+
+    }
+
+    return pop_join(res, &#39;,&#39;);
+
+}
+
+int main() {
+    string command;
+    getline(cin, command);
+
+    string str;
+    getline(cin, str);
+
+    // 编码时&#xff0c;类型 -&gt; 数值
+    type2num[&#34;Integer&#34;] &#61; &#34;0&#34;;
+    type2num[&#34;String&#34;] &#61; &#34;1&#34;;
+    type2num[&#34;Compose&#34;] &#61; &#34;2&#34;;
+
+    // 解码时&#xff0c;数值 -&gt; 类型
+    num2type[&#34;0&#34;] &#61; &#34;Integer&#34;;
+    num2type[&#34;1&#34;] &#61; &#34;String&#34;;
+    num2type[&#34;2&#34;] &#61; &#34;Compose&#34;;
+
+    if (command &#61;&#61; &#34;1&#34;) {
+        cout &lt;&lt; encode(str) &lt;&lt; endl;
+    } else if (command &#61;&#61; &#34;2&#34;) {
+        cout &lt;&lt; decode(str) &lt;&lt; endl;
+    }
+
+    return 0;
+}</code></pre>
+                </div>
+        </div>
+        <div id="treeSkill"></div>
+        <div id="blogExtensionBox" style="width:400px;margin:auto;margin-top:12px" class="blog-extension-box"></div>
+    <script>
+  $(function() {
+    setTimeout(function () {
+      var mathcodeList = document.querySelectorAll('.htmledit_views img.mathcode');
+      if (mathcodeList.length > 0) {
+        for (let i = 0; i < mathcodeList.length; i++) {
+          if (mathcodeList[i].naturalWidth === 0 || mathcodeList[i].naturalHeight === 0) {
+            var alt = mathcodeList[i].alt;
+            alt = '\\(' + alt + '\\)';
+            var curSpan = $('<span class="img-codecogs"></span>');
+            curSpan.text(alt);
+            $(mathcodeList[i]).before(curSpan);
+            $(mathcodeList[i]).remove();
+          }
+        }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+      }
+    }, 1000)
+  });
+</script>
+</div></html>

@@ -1,0 +1,554 @@
+<html lang="zh-CN"><head><meta charset="UTF-8"><style>.nodata  main {width:1000px;margin: auto;}</style></head><body class="nodata " style=""><div class="main_father clearfix d-flex justify-content-center " style="height:100%;"> <div class="container clearfix " id="mainBox"><main><div class="blog-content-box">
+<div class="article-header-box">
+<div class="article-header">
+<div class="article-title-box">
+<h1 class="title-article" id="articleContentId">(C卷,100分)- 数的分解（Java & JS & Python & C & C++）</h1>
+</div>
+</div>
+</div>
+<div id="blogHuaweiyunAdvert"></div>
+
+        <div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-044f2cf1dc.css">
+                <div id="content_views" class="htmledit_views">
+                    <h4 id="main-toc">题目描述</h4> 
+<p>给定一个正整数 n&#xff0c;如果能够分解为 m&#xff08;m &gt; 1&#xff09;个连续正整数之和&#xff0c;请输出所有分解中&#xff0c;m最小的分解。</p> 
+<p>如果给定整数无法分解为连续正整数&#xff0c;则输出字符串&#34;N&#34;。</p> 
+<p></p> 
+<h4 id="%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0">输入描述</h4> 
+<p>输入数据为一整数&#xff0c;范围为 (1, 2^30]</p> 
+<p></p> 
+<h4 id="%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0">输出描述</h4> 
+<p>比如输入为&#xff1a;</p> 
+<blockquote> 
+ <p>21</p> 
+</blockquote> 
+<p>输出&#xff1a;</p> 
+<blockquote> 
+ <p>21&#61;10&#43;11</p> 
+</blockquote> 
+<p></p> 
+<h4 id="%E7%94%A8%E4%BE%8B">用例</h4> 
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><tbody><tr><td style="width:86px;">输入</td><td style="width:412px;">21</td></tr><tr><td style="width:86px;">输出</td><td style="width:412px;">21&#61;10&#43;11</td></tr><tr><td style="width:86px;">说明</td><td style="width:412px;"> <p>21可以分解的连续正整数组合的形式有多种&#xff1a;</p> <p>21&#61;1&#43;2&#43;3&#43;4&#43;5&#43;6</p> <p>21&#61;6&#43;7&#43;8</p> <p>21&#61;10&#43;11</p> <p>其中 21&#61;10&#43;11&#xff0c;是最短的分解序列。</p> </td></tr></tbody></table> 
+<p></p> 
+<h4 id="%E9%A2%98%E7%9B%AE%E8%A7%A3%E6%9E%90">题目解析</h4> 
+<p>本题的输入数数量级太大了&#xff0c;因此本题采用常规的滑窗思路会超时。</p> 
+<p></p> 
+<p>本题的不超时解题思路如下&#xff1a;</p> 
+<p></p> 
+<p>对于奇数 n&#xff08;&gt;&#61;3&#xff09;的话&#xff0c;其实可以固定分解为两个连续整数之和</p> 
+<blockquote> 
+ <p>n &#61; (n / 2) &#43; (n / 2 &#43; 1)</p> 
+</blockquote> 
+<p>其中 / 为整除。</p> 
+<p>比如 7 &#61; 3 &#43; 4&#xff0c;21 &#61; 10 &#43; 11&#xff0c;31 &#61; 15 &#43; 16</p> 
+<p></p> 
+<hr /> 
+<p>对于偶数 n&#xff08;&gt;&#61;2&#xff09;的话&#xff0c;我们假设其能分解为连续正整数数列的话&#xff0c;那么连续正整数数列的长度len要么是偶数、要么是奇数。</p> 
+<hr /> 
+<p>如果len为偶数的话&#xff0c;那么连续正整数序列的中位数mid是一个小数&#xff0c;比如</p> 
+<blockquote> 
+ <p>10&#61;1&#43;2&#43;3&#43;4&#xff0c;中位数就是2.5</p> 
+</blockquote> 
+<p>而此时 mid*2 必然是一个奇数x&#xff0c;且 x 必然可以被 n 整除。 且存在公式&#xff1a;</p> 
+<blockquote> 
+ <p>len &#61; n * 2 / x</p> 
+</blockquote> 
+<p>通过上面公式我们可以发现&#xff0c;想要len最小&#xff0c;则要x最大。</p> 
+<p>因此&#xff0c;此时我们只要找到可以被n整除的最大奇因数x即可。</p> 
+<p>而一个数的最大奇因数&#xff0c;就是该数不断除以2&#xff0c;当其商不为偶数时&#xff0c;此时商即为该数的最大奇因数。</p> 
+<p></p> 
+<p>找到最大奇因数x后&#xff0c;我们就找到了连续正整数数列的中间两个数&#xff0c;比如n&#61;10的最大奇因数是5&#xff0c;而5&#61;2&#43;3&#xff0c;因此10可以分解的最短连续正整数数列的中间两个数是2和3</p> 
+<p>而 n / x * 2 就是 n 可分解出来的 最短连续正整数的长度&#xff0c;比如n&#61;10&#xff0c;x&#61;5&#xff0c;那么10的最短连续正整数序列的长度 &#61; 10 / 5 * 2 &#61; 4。</p> 
+<p>结合连续正整数的长度、以及中间两个数&#xff0c;我们就能还原出这个连续正整数数列。</p> 
+<p></p> 
+<hr /> 
+<p>如果len为奇数的话&#xff0c;那么该len同时需要满足被n整除&#xff0c;因此只需要从3枚举到n的最大奇因数&#xff0c;看是否可以被n整除。</p> 
+<p>此时 n / len 的值&#xff0c;即为连续正整数数列的中位数mid。比如&#xff1a;</p> 
+<blockquote> 
+ <p>12 &#61; 3 &#43; 4 &#43; 5</p> 
+</blockquote> 
+<p>此时n&#61;12&#xff0c;len&#61;3&#xff0c;连续正整数数列的中位数 mid &#61; 12 / 3 &#61; 4。</p> 
+<p>基于连续正整数的中位数&#xff0c;以及连续正整数的长度&#xff0c;我们就能还原出连续正整数数列。</p> 
+<p></p> 
+<h4 id="%E7%AE%97%E6%B3%95%E6%BA%90%E7%A0%81">JS算法源码</h4> 
+<pre><code class="language-javascript">const rl &#61; require(&#34;readline&#34;).createInterface({ input: process.stdin });
+var iter &#61; rl[Symbol.asyncIterator]();
+const readline &#61; async () &#61;&gt; (await iter.next()).value;
+
+// 输入处理
+void (async function () {
+  const n &#61; parseInt(await readline());
+  console.log(getResult(n));
+})();
+
+function getResult(n) {
+  if (n &#61;&#61; 1) {
+    return &#34;N&#34;;
+  }
+
+  // 如果 n 是奇数, 那么固定分解为两个数
+  if (n % 2 !&#61; 0) {
+    const midL &#61; Math.floor(n / 2);
+    return &#96;${n}&#61;${midL}&#43;${midL &#43; 1}&#96;;
+  }
+
+  // 如果 n 是偶数, 那么首先求出 n 的最大奇因数 x
+  let x &#61; n / 2;
+  while (x % 2 &#61;&#61; 0) {
+    x /&#61; 2;
+  }
+
+  // 如果偶数 n 分解出来的连续正整数数列的长度是偶数&#xff0c;则最短长度为minEvenLen
+  const minEvenLen &#61; (n / x) * 2;
+  //  minEvenLen_start 是偶数长度连续正整数数列的首元素&#xff0c;其中
+  //    Math.floor(x / 2)是连续正整数中间两个数的左边那个数
+  //    (len / 2 - 1) 是:连续正整数数列首元素 ~ 连续正整数中间两个数的左边那个数 的距离
+  const minEvenLen_start &#61; Math.floor(x / 2) - (minEvenLen / 2 - 1);
+
+  // 如果偶数 n 分解出来的连续正整数数列的长度是奇数&#xff0c;那么最短长度为minOddLen
+  const minOddLen &#61; getMinOddLen(n, x);
+  //  minOddLen_start 是奇数长度连续正整数数列的首元素&#xff0c;其中
+  //    n/len是连续正整数中间的那个数
+  //    ((len - 1) / 2) 是是连续正整数数列首元素 ~ 连续正整数中间那个数 的距离
+  const minOddLen_start &#61; n / minOddLen - (minOddLen - 1) / 2;
+
+  let len;
+  let start;
+
+  // 连续正整数数列中每个元素都是正整数&#xff0c;因此求解出来的首元素需要大于等于1
+  if (minEvenLen_start &gt;&#61; 1 &amp;&amp; minOddLen_start &gt;&#61; 1) {
+    if (minEvenLen &lt; minOddLen) {
+      len &#61; minEvenLen;
+      start &#61; minEvenLen_start;
+    } else {
+      len &#61; minOddLen;
+      start &#61; minOddLen_start;
+    }
+  } else if (minEvenLen_start &gt;&#61; 1) {
+    len &#61; minEvenLen;
+    start &#61; minEvenLen_start;
+  } else if (minOddLen_start &gt;&#61; 1) {
+    len &#61; minOddLen;
+    start &#61; minOddLen_start;
+  } else {
+    return &#34;N&#34;;
+  }
+
+  const arr &#61; [];
+  for (let i &#61; start; i &lt; start &#43; len; i&#43;&#43;) {
+    arr.push(i);
+  }
+
+  return n &#43; &#34;&#61;&#34; &#43; arr.join(&#34;&#43;&#34;);
+}
+
+/**
+ * &#64;param n 要被分解的正整数&#xff08;偶数&#xff09;
+ * &#64;param x n的最大奇因数
+ * &#64;return n分解出来的连续正整数数列的最短奇数长度
+ */
+function getMinOddLen(n, x) {
+  // 我们需要遍历 3~x 中的所有奇数&#xff0c;尝试作为 n 分解出来的连续正整数数列的长度len
+  if (x &lt; 3) {
+    return -1;
+  }
+
+  // 找到可以被n整除的最小奇数&#xff0c;由于x是n的最大奇因数&#xff0c;因此这里直接对奇数x进行因数分解
+  for (let i &#61; 3; i * i &lt;&#61; x; i &#43;&#61; 2) {
+    if (n % i &#61;&#61; 0) return i; // 如果x可以分解为两个奇数y,z&#xff0c;则必然&#xff1a;y &lt;&#61; z&#xff0c;因此x分解出来的最小奇数不可能超过sqrt(x)
+  }
+
+  return x;
+}
+</code></pre> 
+<p></p> 
+<h4>Java算法源码</h4> 
+<pre><code class="language-java">import java.util.Scanner;
+import java.util.StringJoiner;
+
+public class Main {
+  public static void main(String[] args) {
+    Scanner sc &#61; new Scanner(System.in);
+    System.out.println(getResult(sc.nextLong()));
+  }
+
+  public static String getResult(long n) {
+    if (n &#61;&#61; 1) {
+      return &#34;N&#34;;
+    }
+
+    // 如果 n 是奇数, 那么固定分解为两个数
+    if (n % 2 !&#61; 0) {
+      return n &#43; &#34;&#61;&#34; &#43; (n / 2) &#43; &#34;&#43;&#34; &#43; (n / 2 &#43; 1);
+    }
+
+    // 如果 n 是偶数, 那么首先求出 n 的最大奇因数 x
+    long x &#61; n / 2;
+    while (x % 2 &#61;&#61; 0) {
+      x /&#61; 2;
+    }
+
+    // 如果偶数 n 分解出来的连续正整数数列的长度是偶数&#xff0c;则最短长度为minEvenLen
+    long minEvenLen &#61; n / x * 2;
+    //  minEvenLen_start 是偶数长度连续正整数数列的首元素&#xff0c;其中
+    //    x/2是连续正整数中间两个数的左边那个数
+    //    (len / 2 - 1) 是连续正整数数列首元素 ~ 连续正整数中间两个数的左边那个数 的距离
+    long minEvenLen_start &#61; x / 2 - (minEvenLen / 2 - 1);
+
+    // 如果偶数 n 分解出来的连续正整数数列的长度是奇数&#xff0c;那么最短长度为minOddLen
+    long minOddLen &#61; getMinOddLen(n, x);
+    //  minOddLen_start 是奇数长度连续正整数数列的首元素&#xff0c;其中
+    //    n/len是连续正整数中间的那个数
+    //    ((len - 1) / 2) 是是连续正整数数列首元素 ~ 连续正整数中间那个数 的距离
+    long minOddLen_start &#61; n / minOddLen - ((minOddLen - 1) / 2);
+
+    long len;
+    long start;
+
+    // 连续正整数数列中每个元素都是正整数&#xff0c;因此求解出来的首元素需要大于等于1
+    if (minEvenLen_start &gt;&#61; 1 &amp;&amp; minOddLen_start &gt;&#61; 1) {
+      if (minEvenLen &lt; minOddLen) {
+        len &#61; minEvenLen;
+        start &#61; minEvenLen_start;
+      } else {
+        len &#61; minOddLen;
+        start &#61; minOddLen_start;
+      }
+    } else if (minEvenLen_start &gt;&#61; 1) {
+      len &#61; minEvenLen;
+      start &#61; minEvenLen_start;
+    } else if (minOddLen_start &gt;&#61; 1) {
+      len &#61; minOddLen;
+      start &#61; minOddLen_start;
+    } else {
+      return &#34;N&#34;;
+    }
+
+    StringJoiner sj &#61; new StringJoiner(&#34;&#43;&#34;, n &#43; &#34;&#61;&#34;, &#34;&#34;);
+    for (long i &#61; start; i &lt; start &#43; len; i&#43;&#43;) {
+      sj.add(i &#43; &#34;&#34;);
+    }
+    return sj.toString();
+  }
+
+  /**
+   * &#64;param n 要被分解的正整数&#xff08;偶数&#xff09;
+   * &#64;param x n的最大奇因数
+   * &#64;return n分解出来的连续正整数数列的最短奇数长度
+   */
+  public static long getMinOddLen(long n, long x) {
+    // 我们需要遍历 3~x 中的所有奇数&#xff0c;尝试作为 n 分解出来的连续正整数数列的长度
+    if (x &lt; 3) {
+      return -1;
+    }
+
+    // 找到可以被n整除的最小奇数&#xff0c;由于x是n的最大奇因数&#xff0c;因此这里直接对奇数x进行因数分解
+    for (long i &#61; 3; i * i &lt;&#61; x; i &#43;&#61; 2) { // 如果x可以分解为两个奇数y,z&#xff0c;则必然&#xff1a;y &lt;&#61; z&#xff0c;因此x分解出来的最小奇数不可能超过sqrt(x)
+      if (n % i &#61;&#61; 0) return i;
+    }
+
+    return x; // 如果上面x无法分解&#xff0c;则返回x
+  }
+}
+</code></pre> 
+<p></p> 
+<h4>Python算法源码</h4> 
+<pre><code class="language-python"># 输入获取
+n &#61; int(input())
+
+
+def getMinOddLen(x):
+    &#34;&#34;&#34;
+    :param x: n的最大奇因数
+    :return: n分解出来的连续正整数数列的最短奇数长度
+    &#34;&#34;&#34;
+    # 我们需要遍历 3~x 中的所有奇数&#xff0c;尝试作为 n 分解出来的连续正整数数列的长度len
+    if x &lt; 3:
+        return -1
+
+    # 找到可以被n整除的最小奇数&#xff0c;由于x是n的最大奇因数&#xff0c;因此这里直接对奇数x进行因数分解
+    i &#61; 3
+    while i * i &lt;&#61; x: # 如果x可以分解为两个奇数y,z&#xff0c;则必然&#xff1a;y &lt;&#61; z&#xff0c;因此x分解出来的最小奇数不可能超过sqrt(x)
+        if n % i &#61;&#61; 0:
+            return i
+        i &#43;&#61; 2
+
+    return x
+
+
+# 算法入口
+def getResult():
+    if n &#61;&#61; 1:
+        return &#34;N&#34;
+
+    #  如果 n 是奇数, 那么固定分解为两个数
+    if n % 2 !&#61; 0:
+        return f&#34;{n}&#61;{n // 2}&#43;{n // 2 &#43; 1}&#34;
+
+    # 如果 n 是偶数, 那么首先求出 n 的最大奇因数 x
+    x &#61; n // 2
+    while x % 2 &#61;&#61; 0:
+        x //&#61; 2
+
+    # 如果偶数 n 分解出来的连续正整数数列的长度是偶数&#xff0c;则最短长度为minEvenLen
+    minEvenLen &#61; n // x * 2
+    # minEvenLen_start 是偶数长度连续正整数数列的首元素&#xff0c;其中
+    #  x/2是连续正整数中间两个数的左边那个数
+    #  (len / 2 - 1) 是连续正整数数列首元素 ~ 连续正整数中间两个数的左边那个数 的距离
+    minEvenLen_start &#61; x // 2 - (minEvenLen // 2 - 1)
+
+    # 如果偶数 n 分解出来的连续正整数数列的长度是奇数&#xff0c;那么最短长度为minOddLen
+    minOddLen &#61; getMinOddLen(x)
+    # minOddLen_start 是奇数长度连续正整数数列的首元素&#xff0c;其中
+    #  n/len是连续正整数中间的那个数
+    #  ((len - 1) / 2) 是是连续正整数数列首元素 ~ 连续正整数中间那个数 的距离
+    minOddLen_start &#61; n // minOddLen - (minOddLen - 1) // 2
+
+    length &#61; None
+    start &#61; None
+
+    # 连续正整数数列中每个元素都是正整数&#xff0c;因此求解出来的首元素需要大于等于1
+    if minOddLen_start &gt;&#61; 1 and minEvenLen_start &gt;&#61; 1:
+        if minEvenLen &lt; minOddLen:
+            length &#61; minEvenLen
+            start &#61; minEvenLen_start
+        else:
+            length &#61; minOddLen
+            start &#61; minOddLen_start
+    elif minEvenLen_start &gt;&#61; 1:
+        length &#61; minEvenLen
+        start &#61; minEvenLen_start
+    elif minOddLen_start &gt;&#61; 1:
+        length &#61; minOddLen
+        start &#61; minOddLen_start
+    else:
+        return &#34;N&#34;
+
+    arr &#61; []
+    for i in range(start, start &#43; length):
+        arr.append(i)
+
+    return f&#34;{n}&#61;{&#39;&#43;&#39;.join(map(str, arr))}&#34;
+
+
+# 算法调用
+print(getResult())
+</code></pre> 
+<p></p> 
+<h4 style="background-color:transparent;">C算法源码</h4> 
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+
+/**
+ * &#64;param n 要被分解的正整数&#xff08;偶数&#xff09;
+ * &#64;param x n的最大奇因数
+ * &#64;return n分解出来的连续正整数数列的最短奇数长度
+ */
+long getMinOddLen(long n, long x) {
+    // 我们需要遍历 3~x 中的所有奇数&#xff0c;尝试作为 n 分解出来的连续正整数数列的长度len
+    if (x &lt; 3) {
+        return -1;
+    }
+
+    // 找到可以被n整除的最小奇数&#xff0c;由于x是n的最大奇因数&#xff0c;因此这里直接对奇数x进行因数分解
+    for (int i &#61; 3; i * i &lt;&#61; x; i &#43;&#61; 2) { // 如果x可以分解为两个奇数y,z&#xff0c;则必然&#xff1a;y &lt;&#61; z&#xff0c;因此x分解出来的最小奇数不可能超过sqrt(x)
+        if (n % i &#61;&#61; 0) {
+            return i;
+        }
+    }
+
+    return x;
+}
+
+void getResult(long n) {
+    if (n &#61;&#61; 1) {
+        puts(&#34;N&#34;);
+        return;
+    }
+
+    // 如果 n 是奇数, 那么固定分解为两个数
+    if (n % 2 !&#61; 0) {
+        printf(&#34;%ld&#61;%ld&#43;%ld\n&#34;, n, n / 2, n / 2 &#43; 1);
+        return;
+    }
+
+    // 如果 n 是偶数, 那么首先求出 n 的最大奇因数 x
+    long x &#61; n / 2;
+    while (x % 2 &#61;&#61; 0) {
+        x /&#61; 2;
+    }
+
+    // 如果偶数 n 分解出来的连续正整数数列的长度是偶数&#xff0c;则最短长度为minEvenLen
+    long minEvenLen &#61; n / x * 2;
+    //  minEvenLen_start 是偶数长度连续正整数数列的首元素&#xff0c;其中
+    //    x/2是连续正整数中间两个数的左边那个数
+    //    (len / 2 - 1) 是连续正整数数列首元素 ~ 连续正整数中间两个数的左边那个数 的距离
+    long minEvenLen_start &#61; x / 2 - (minEvenLen / 2 - 1);
+
+    // 如果偶数 n 分解出来的连续正整数数列的长度是奇数&#xff0c;那么最短长度为minOddLen
+    long minOddLen &#61; getMinOddLen(n, x);
+    //  minOddLen_start 是奇数长度连续正整数数列的首元素&#xff0c;其中
+    //    n/len是连续正整数中间的那个数
+    //    ((len - 1) / 2) 是是连续正整数数列首元素 ~ 连续正整数中间那个数 的距离
+    long minOddLen_start &#61; n / minOddLen - ((minOddLen - 1) / 2);
+
+    long len;
+    long start;
+
+    // 连续正整数数列中每个元素都是正整数&#xff0c;因此求解出来的首元素需要大于等于1
+    if (minEvenLen_start &gt;&#61; 1 &amp;&amp; minOddLen_start &gt;&#61; 1) {
+        if (minEvenLen &lt; minOddLen) {
+            len &#61; minEvenLen;
+            start &#61; minEvenLen_start;
+        } else {
+            len &#61; minOddLen;
+            start &#61; minOddLen_start;
+        }
+    } else if (minEvenLen_start &gt;&#61; 1) {
+        len &#61; minEvenLen;
+        start &#61; minEvenLen_start;
+    } else if (minOddLen_start &gt;&#61; 1) {
+        len &#61; minOddLen;
+        start &#61; minOddLen_start;
+    } else {
+        puts(&#34;N&#34;);
+        return;
+    }
+
+    printf(&#34;%ld&#61;&#34;, n);
+    for (long i &#61; start; i &lt; start &#43; len; i&#43;&#43;) {
+        printf(&#34;%ld&#34;, i);
+        if (i &lt; start &#43; len - 1) {
+            printf(&#34;&#43;&#34;);
+        } else {
+            printf(&#34;\n&#34;);
+        }
+    }
+}
+
+int main() {
+    long n;
+    scanf(&#34;%ld&#34;, &amp;n);
+
+    getResult(n);
+}</code></pre> 
+<p></p> 
+<h4>C&#43;&#43;算法源码</h4> 
+<pre><code class="language-cpp">#include &lt;bits/stdc&#43;&#43;.h&gt;
+using namespace std;
+
+/*!
+ *
+ * &#64;param n 要被分解的正整数&#xff08;偶数&#xff09;
+ * &#64;param x n的最大奇因数
+ * &#64;return n分解出来的连续正整数数列的最短奇数长度
+ */
+long getMinOddLen(long n, long x) {
+    // 我们需要遍历 3~x 中的所有奇数&#xff0c;尝试作为 n 分解出来的连续正整数数列的长度
+    if (x &lt; 3) {
+        return -1;
+    }
+
+    // 找到可以被n整除的最小奇数&#xff0c;由于x是n的最大奇因数&#xff0c;因此这里直接对奇数x进行因数分解
+    for (long i &#61; 3; i * i &lt;&#61; x; i &#43;&#61; 2) { // 如果x可以分解为两个奇数y,z&#xff0c;则必然&#xff1a;y &lt;&#61; z&#xff0c;因此x分解出来的最小奇数不可能超过sqrt(x)
+        if (n % i &#61;&#61; 0) return i;
+    }
+
+    return x; // 如果上面x无法分解&#xff0c;则返回x
+}
+
+void solution(long n) {
+    if (n &#61;&#61; 1) {
+        cout &lt;&lt; &#34;N&#34; &lt;&lt; endl;
+        return;
+    }
+
+    // 如果 n 是奇数, 那么固定分解为两个数
+    if (n % 2 !&#61; 0) {
+        cout &lt;&lt; n &lt;&lt; &#34;&#61;&#34; &lt;&lt; (n / 2) &lt;&lt; &#34;&#43;&#34; &lt;&lt; (n / 2 &#43; 1) &lt;&lt; endl;
+        return;
+    }
+
+    // 如果 n 是偶数, 那么首先求出 n 的最大奇因数 x
+    long x &#61; n / 2;
+    while (x % 2 &#61;&#61; 0) {
+        x /&#61; 2;
+    }
+
+    // 如果偶数 n 分解出来的连续正整数数列的长度是偶数&#xff0c;则最短长度为minEvenLen
+    long minEvenLen &#61; n / x * 2;
+    //  minEvenLen_start 是偶数长度连续正整数数列的首元素&#xff0c;其中
+    //    x/2是连续正整数中间两个数的左边那个数
+    //    (len / 2 - 1) 是连续正整数数列首元素 ~ 连续正整数中间两个数的左边那个数 的距离
+    long minEvenLen_start &#61; x / 2 - (minEvenLen / 2 - 1);
+
+    // 如果偶数 n 分解出来的连续正整数数列的长度是奇数&#xff0c;那么最短长度为minOddLen
+    long minOddLen &#61; getMinOddLen(n, x);
+    //  minOddLen_start 是奇数长度连续正整数数列的首元素&#xff0c;其中
+    //    n/len是连续正整数中间的那个数
+    //    ((len - 1) / 2) 是是连续正整数数列首元素 ~ 连续正整数中间那个数 的距离
+    long minOddLen_start &#61; n / minOddLen - ((minOddLen - 1) / 2);
+
+    long len;
+    long start;
+
+    // 连续正整数数列中每个元素都是正整数&#xff0c;因此求解出来的首元素需要大于等于1
+    if (minEvenLen_start &gt;&#61; 1 &amp;&amp; minOddLen_start &gt;&#61; 1) {
+        if (minEvenLen &lt; minOddLen) {
+            len &#61; minEvenLen;
+            start &#61; minEvenLen_start;
+        } else {
+            len &#61; minOddLen;
+            start &#61; minOddLen_start;
+        }
+    } else if (minEvenLen_start &gt;&#61; 1) {
+        len &#61; minEvenLen;
+        start &#61; minEvenLen_start;
+    } else if (minOddLen_start &gt;&#61; 1) {
+        len &#61; minOddLen;
+        start &#61; minOddLen_start;
+    } else {
+        cout &lt;&lt; &#34;N&#34; &lt;&lt; endl;
+        return;
+    }
+
+    cout &lt;&lt; n &lt;&lt; &#34;&#61;&#34; &lt;&lt; start;
+    for (long i &#61; start &#43; 1; i &lt; start &#43; len; i&#43;&#43;) {
+        cout &lt;&lt; &#34;&#43;&#34; &lt;&lt; i;
+    }
+    cout &lt;&lt; endl;
+}
+
+int main() {
+    long n;
+    cin &gt;&gt; n;
+
+    solution(n);
+    return 0;
+}</code></pre>
+                </div>
+        </div>
+        <div id="treeSkill"></div>
+        <div id="blogExtensionBox" style="width:400px;margin:auto;margin-top:12px" class="blog-extension-box"></div>
+    <script>
+  $(function() {
+    setTimeout(function () {
+      var mathcodeList = document.querySelectorAll('.htmledit_views img.mathcode');
+      if (mathcodeList.length > 0) {
+        for (let i = 0; i < mathcodeList.length; i++) {
+          if (mathcodeList[i].naturalWidth === 0 || mathcodeList[i].naturalHeight === 0) {
+            var alt = mathcodeList[i].alt;
+            alt = '\\(' + alt + '\\)';
+            var curSpan = $('<span class="img-codecogs"></span>');
+            curSpan.text(alt);
+            $(mathcodeList[i]).before(curSpan);
+            $(mathcodeList[i]).remove();
+          }
+        }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+      }
+    }, 1000)
+  });
+</script>
+</div></html>
