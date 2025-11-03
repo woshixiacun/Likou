@@ -9,6 +9,7 @@ class Solution:
             if target - num in harshtable:
                 return [id, harshtable[target - num]]
             harshtable[nums[id]] = id
+            # print(nums[id],'=',num)
         return []
 
     
