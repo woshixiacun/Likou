@@ -28,20 +28,20 @@ class Solution:
         return result
         
 
-class Solution:
-    def convert(self, s: str, numRows: int) -> str:
-        temp = [i for i in range(numRows)]
-        print(temp)
-        temp += temp[1:-1][::-1]  # 就是去掉首尾后，再把剩余部分倒序。
-        print(temp)
+# class Solution:
+#     def convert(self, s: str, numRows: int) -> str:
+#         temp = [i for i in range(numRows)]
+#         print(temp)
+#         temp += temp[1:-1][::-1]  # 就是去掉首尾后，再把剩余部分倒序。
+#         print(temp)
 
-        res = [''] * numRows
-        n = len(s)
+#         res = [''] * numRows
+#         n = len(s)
 
-        for i in range(n):
-            res[temp[i%len(temp)]] += s[i]
+#         for i in range(n):
+#             res[temp[i%len(temp)]] += s[i]
 
-        return ''.join(res)
+#         return ''.join(res)
 
 
 s = "PAYPALISHIRING"
